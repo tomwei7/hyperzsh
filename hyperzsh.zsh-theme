@@ -1,10 +1,15 @@
-# The prompt
-PROMPT='$(_user_host)$(_python_venv)%{$fg[cyan]%}%c $(git_prompt_info)%{$reset_color%}$(_git_time_since_commit)$(git_prompt_status)${_return_status}➜ '
+# The origin prompt
+PROMPT='$(_python_venv)$(_proxy_status)${_background_job}%{$fg[cyan]%}%c $(git_prompt_info)%{$reset_color%}$(git_prompt_status)${_return_status_arrow} '
+
+# The origin prompt
+# PROMPT='$(_user_host)$(_python_venv)%{$fg[cyan]%}%c $(git_prompt_info)%{$reset_color%}$(_git_time_since_commit)$(git_prompt_status)${_return_status}➜ '
 
 # Prompt with SHA
 # PROMPT='$(_user_host)$(_python_venv)%{$fg[cyan]%}%c $(git_prompt_info)%{$reset_color%}$(git_prompt_short_sha)%{$fg[magenta]%}$(_git_time_since_commit)$(git_prompt_status)${_return_status}➜ '
 
 local _return_status="%{$fg[red]%}%(?..⍉ )%{$reset_color%}"
+local _return_status_arrow="%(?:%{$fg_bold[green]%}➙ :%{$fg_bold[red]%}➙ )%{$reset_color%}"
+local _background_job="%{$fg[blue]%}%(1j.⟳ %j .)%{$reset_color%}"
 
 function _user_host() {
   if [[ $(who am i) =~ \([-a-zA-Z0-9\.]+\) ]]; then
@@ -22,6 +27,13 @@ function _python_venv() {
   if [[ $VIRTUAL_ENV != "" ]]; then
     echo "%{$fg[blue]%}(${VIRTUAL_ENV##*/})%{$reset_color%} "
   fi
+}
+
+# Determine if proxy has be set
+function _proxy_status() {
+    if [[ $HTTP_PROXY != "" || $http_proxy != "" ]]; then
+        echo "%{$fg[green]%}☷%{$reset_color%} "
+    fi
 }
 
 # Format for git_prompt_long_sha() and git_prompt_short_sha()
