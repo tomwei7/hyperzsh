@@ -51,7 +51,7 @@ function _python_venv() {
 
 function _proxy_status() {
     if [[ $HTTP_PROXY != "" || $http_proxy != "" ]]; then
-        echo "%{$fg[green]%}☷ "
+        echo "%F{green}☷ "
     fi
 }
 
