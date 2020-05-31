@@ -6,21 +6,19 @@
 # Requires the `git-info` zmodule to be included in the .zimrc file.
 
 _prompt_gitster_pwd() {
-  local git_root current_dir
-  if git_root=$(command git rev-parse --show-toplevel 2>/dev/null); then
-    current_dir="${PWD#${git_root:h}/}"
-  else
-    current_dir="${PWD/#${HOME}/~}"
+  local current_dir="${PWD/#${HOME}/~}"
+  if [[ ${current_dir} != '~' ]]; then
+    current_dir="${${(@j:/:M)${(@s:/:)current_dir:h}#?}%/}/${current_dir:t}"
   fi
-  print -n "%F{white}${current_dir}"
+  print -n "%B%F{white}${current_dir}%b"
 }
 
 setopt nopromptbang prompt{cr,percent,sp,subst}
 
 typeset -gA git_info
 if (( ${+functions[git-info]} )); then
-  zstyle ':zim:git-info:branch' format '%b'
-  zstyle ':zim:git-info:commit' format '%c'
+  zstyle ':zim:git-info:branch' format ' %b'
+  zstyle ':zim:git-info:commit' format '➦ %c'
   zstyle ':zim:git-info:clean' format '%F{green}✓'
   zstyle ':zim:git-info:dirty' format '%F{yellow}✗'
   zstyle ':zim:git-info:keys' format \
@@ -45,7 +43,7 @@ function _user_host() {
 
 function _python_venv() {
   if [[ $VIRTUAL_ENV != "" ]]; then
-    echo "%F{blue}(${VIRTUAL_ENV##*/})"
+    echo "%F{magenta}(${VIRTUAL_ENV##*/}) "
   fi
 }
 
